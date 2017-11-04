@@ -1,0 +1,19 @@
+language: java
+sudo: required
+
+before_install:
+  - sh travis/copyright.sh
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+      - oracle-java9-installer
+
+matrix:
+  include:
+    - jdk: oraclejdk8
+    - jdk: oraclejdk9
+
+notifications:
+  email: false
