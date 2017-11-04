@@ -141,7 +141,19 @@ public class YggdrasilServiceTest {
 
     @Test
     public void testSignout() {
-        Assert.fail();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("username", "Notch");
+        payload.addProperty("password", "password");
+
+        CompletableFuture<JsonObject> result = service.signout(payload);
+        CompletableFuture.allOf(result).join();
+
+        JsonObject object = result.join();
+        this.validateSignout(object);
+    }
+
+    public void validateSignout(JsonObject result) {
+        Assert.assertNotNull(result);
     }
 
     @Test

@@ -148,7 +148,9 @@ final class YggdrasilDispatcher extends Dispatcher {
     }
 
     private MockResponse signout(RecordedRequest request, JsonObject body) {
-        return null;
+        return new MockResponse()
+                .setResponseCode(200)
+                .setBody("{}");
     }
 
     private MockResponse invalidate(RecordedRequest request, JsonObject body) {
