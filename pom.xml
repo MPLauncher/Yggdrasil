@@ -10,7 +10,7 @@
 
     <groupId>pl.mplauncher</groupId>
     <artifactId>yggdrasil</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <scm>
         <connection>scm:git:https://github.com/MPLauncher/Yggdrasil.git</connection>
