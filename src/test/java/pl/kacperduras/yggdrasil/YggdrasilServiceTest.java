@@ -18,8 +18,8 @@ package pl.kacperduras.yggdrasil;
 import com.google.gson.JsonObject;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pl.mplauncher.yggdrasil.YggdrasilClient;
 import pl.mplauncher.yggdrasil.YggdrasilService;
@@ -36,8 +36,8 @@ public class YggdrasilServiceTest {
 
     private static YggdrasilService service;
 
-    @BeforeEach
-    public void setup() throws IOException {
+    @BeforeAll
+    public static void setup() throws IOException {
         server.setDispatcher(new YggdrasilDispatcher());
         server.start();
 
@@ -49,10 +49,8 @@ public class YggdrasilServiceTest {
                 .build().create(YggdrasilService.class);
     }
 
-    @AfterEach
-    public void destroy() throws IOException {
-        service = null;
-
+    @AfterAll
+    public static void destroy() throws IOException {
         server.close();
     }
 
@@ -158,7 +156,19 @@ public class YggdrasilServiceTest {
 
     @Test
     public void testInvalidate() {
-        Assert.fail();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("accessToken", "token");
+        payload.addProperty("clientToken", "token");
+
+        CompletableFuture<JsonObject> result = service.invalidate(payload);
+        CompletableFuture.allOf(result).join();
+
+        JsonObject object = result.join();
+        this.validateInvalidate(object);
+    }
+
+    public void validateInvalidate(JsonObject result) {
+        Assert.assertNotNull(result);
     }
 
 }
