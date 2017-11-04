@@ -17,8 +17,8 @@ package pl.kacperduras.yggdrasil;
 
 import com.google.gson.JsonObject;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pl.mplauncher.yggdrasil.YggdrasilClient;
@@ -74,15 +74,15 @@ public class YggdrasilServiceTest {
     }
 
     public void validateAuthenticate(JsonObject result) {
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
         JsonObject user = result.get("user").getAsJsonObject();
 
-        Assert.assertEquals("token", result.get("accessToken").getAsString());
-        Assert.assertEquals("token", result.get("clientToken").getAsString());
-        Assert.assertEquals(1, result.get("availableProfiles").getAsJsonArray().size());
+        Assertions.assertEquals("token", result.get("accessToken").getAsString());
+        Assertions.assertEquals("token", result.get("clientToken").getAsString());
+        Assertions.assertEquals(1, result.get("availableProfiles").getAsJsonArray().size());
 
-        Assert.assertEquals("id", user.get("id").getAsString());
-        Assert.assertEquals(2, user.get("properties").getAsJsonArray().size());
+        Assertions.assertEquals("id", user.get("id").getAsString());
+        Assertions.assertEquals(2, user.get("properties").getAsJsonArray().size());
     }
 
     @Test
@@ -105,19 +105,19 @@ public class YggdrasilServiceTest {
     }
 
     public void validateRefresh(JsonObject result) {
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
         JsonObject user = result.get("user").getAsJsonObject();
         JsonObject profile = result.get("selectedProfile").getAsJsonObject();
 
-        Assert.assertEquals("token", result.get("accessToken").getAsString());
-        Assert.assertEquals("token", result.get("clientToken").getAsString());
+        Assertions.assertEquals("token", result.get("accessToken").getAsString());
+        Assertions.assertEquals("token", result.get("clientToken").getAsString());
 
-        Assert.assertNotNull(profile);
-        Assert.assertEquals("id", profile.get("id").getAsString());
-        Assert.assertEquals("Notch", profile.get("name").getAsString());
+        Assertions.assertNotNull(profile);
+        Assertions.assertEquals("id", profile.get("id").getAsString());
+        Assertions.assertEquals("Notch", profile.get("name").getAsString());
 
-        Assert.assertEquals("id", user.get("id").getAsString());
-        Assert.assertEquals(2, user.get("properties").getAsJsonArray().size());
+        Assertions.assertEquals("id", user.get("id").getAsString());
+        Assertions.assertEquals(2, user.get("properties").getAsJsonArray().size());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class YggdrasilServiceTest {
     }
 
     public void validateValidate(JsonObject result) {
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class YggdrasilServiceTest {
     }
 
     public void validateSignout(JsonObject result) {
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class YggdrasilServiceTest {
     }
 
     public void validateInvalidate(JsonObject result) {
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
     }
 
 }
