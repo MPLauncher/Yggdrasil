@@ -124,7 +124,19 @@ public class YggdrasilServiceTest {
 
     @Test
     public void testValidate() {
-        Assert.fail();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("accessToken", "token");
+        payload.addProperty("clientToken", "token");
+
+        CompletableFuture<JsonObject> result = service.validate(payload);
+        CompletableFuture.allOf(result).join();
+
+        JsonObject object = result.join();
+        this.validateValidate(object);
+    }
+
+    public void validateValidate(JsonObject result) {
+        Assert.assertNotNull(result);
     }
 
     @Test

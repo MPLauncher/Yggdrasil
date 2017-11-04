@@ -142,7 +142,9 @@ final class YggdrasilDispatcher extends Dispatcher {
     }
 
     private MockResponse validate(RecordedRequest request, JsonObject body) {
-        return null;
+        return new MockResponse()
+                .setResponseCode(200) // TODO: 204 No Content (AssertionError)
+                .setBody("{}");
     }
 
     private MockResponse signout(RecordedRequest request, JsonObject body) {
