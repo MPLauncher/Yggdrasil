@@ -103,7 +103,42 @@ final class YggdrasilDispatcher extends Dispatcher {
     }
 
     private MockResponse refresh(RecordedRequest request, JsonObject body) {
-        return null;
+        JsonObject result = new JsonObject();
+        result.addProperty("accessToken", "token");
+        result.addProperty("clientToken", "token");
+
+        JsonObject profile = new JsonObject();
+        profile.addProperty("id", "id");
+        profile.addProperty("name", body.get("selectedProfile")
+                .getAsJsonObject()
+                .get("name")
+                .getAsString());
+
+        result.add("selectedProfile", profile);
+
+        JsonObject user = new JsonObject();
+        user.addProperty("id", "id");
+
+        JsonArray properties = new JsonArray();
+
+        JsonObject langProperties = new JsonObject();
+        langProperties.addProperty("name", "preferredLanguage");
+        langProperties.addProperty("value", "en");
+
+        JsonObject twitchProperties = new JsonObject();
+        twitchProperties.addProperty("name", "token");
+        twitchProperties.addProperty("value", "token");
+
+        properties.add(langProperties);
+        properties.add(twitchProperties);
+
+        user.add("properties", properties);
+
+        result.add("user", user);
+
+        return new MockResponse()
+                .setResponseCode(200)
+                .setBody(gson.toJson(result));
     }
 
     private MockResponse validate(RecordedRequest request, JsonObject body) {

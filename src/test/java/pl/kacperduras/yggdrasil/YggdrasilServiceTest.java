@@ -15,12 +15,9 @@
 */
 package pl.kacperduras.yggdrasil;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +89,37 @@ public class YggdrasilServiceTest {
 
     @Test
     public void testRefresh() {
-        Assert.fail();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("accessToken", "token");
+        payload.addProperty("clientToken", "token");
+
+        JsonObject profile = new JsonObject();
+        profile.addProperty("id", "id");
+        profile.addProperty("name", "Notch");
+
+        payload.add("selectedProfile", profile);
+
+        CompletableFuture<JsonObject> result = service.refresh(payload);
+        CompletableFuture.allOf(result).join();
+
+        JsonObject object = result.join();
+        this.validateRefresh(object);
+    }
+
+    public void validateRefresh(JsonObject result) {
+        Assert.assertNotNull(result);
+        JsonObject user = result.get("user").getAsJsonObject();
+        JsonObject profile = result.get("selectedProfile").getAsJsonObject();
+
+        Assert.assertEquals("token", result.get("accessToken").getAsString());
+        Assert.assertEquals("token", result.get("clientToken").getAsString());
+
+        Assert.assertNotNull(profile);
+        Assert.assertEquals("id", profile.get("id").getAsString());
+        Assert.assertEquals("Notch", profile.get("name").getAsString());
+
+        Assert.assertEquals("id", user.get("id").getAsString());
+        Assert.assertEquals(2, user.get("properties").getAsJsonArray().size());
     }
 
     @Test
