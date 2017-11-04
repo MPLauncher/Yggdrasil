@@ -16,6 +16,7 @@
 package pl.kacperduras.yggdrasil;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -63,7 +64,42 @@ final class YggdrasilDispatcher extends Dispatcher {
     }
 
     private MockResponse authenticate(RecordedRequest request, JsonObject body) {
-        return null;
+        JsonObject result = new JsonObject();
+        result.addProperty("accessToken", "token");
+        result.addProperty("clientToken", "token");
+
+        JsonArray profiles = new JsonArray();
+
+        JsonObject profile = new JsonObject();
+        profile.addProperty("id", "id");
+        profile.addProperty("name", body.get("username").getAsString());
+
+        profiles.add(profile);
+        result.add("availableProfiles", profiles);
+
+        JsonObject user = new JsonObject();
+        user.addProperty("id", "id");
+
+        JsonArray properties = new JsonArray();
+
+        JsonObject langProperties = new JsonObject();
+        langProperties.addProperty("name", "preferredLanguage");
+        langProperties.addProperty("value", "en");
+
+        JsonObject twitchProperties = new JsonObject();
+        twitchProperties.addProperty("name", "token");
+        twitchProperties.addProperty("value", "token");
+
+        properties.add(langProperties);
+        properties.add(twitchProperties);
+
+        user.add("properties", properties);
+
+        result.add("user", user);
+
+        return new MockResponse()
+                .setResponseCode(200)
+                .setBody(gson.toJson(result));
     }
 
     private MockResponse refresh(RecordedRequest request, JsonObject body) {

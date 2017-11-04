@@ -15,8 +15,12 @@
 */
 package pl.kacperduras.yggdrasil;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +31,7 @@ import retrofit2.adapter.java8.Java8CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class YggdrasilServiceTest {
 
@@ -35,7 +40,7 @@ public class YggdrasilServiceTest {
     private static YggdrasilService service;
 
     @BeforeEach
-    public static void setup() throws IOException {
+    public void setup() throws IOException {
         server.setDispatcher(new YggdrasilDispatcher());
         server.start();
 
@@ -47,9 +52,42 @@ public class YggdrasilServiceTest {
                 .build().create(YggdrasilService.class);
     }
 
+    @AfterEach
+    public void destroy() throws IOException {
+        service = null;
+
+        server.close();
+    }
+
     @Test
     public void testAuthenticate() {
-        Assert.fail();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("username", "Notch");
+        payload.addProperty("password", "password");
+
+        JsonObject agent = new JsonObject();
+        agent.addProperty("name", "Minecraft");
+        agent.addProperty("version", 1);
+
+        payload.add("agent", agent);
+
+        CompletableFuture<JsonObject> result = service.authenticate(payload);
+        CompletableFuture.allOf(result).join();
+
+        JsonObject object = result.join();
+        this.validateAuthenticate(object);
+    }
+
+    public void validateAuthenticate(JsonObject result) {
+        Assert.assertNotNull(result);
+        JsonObject user = result.get("user").getAsJsonObject();
+
+        Assert.assertEquals("token", result.get("accessToken").getAsString());
+        Assert.assertEquals("token", result.get("clientToken").getAsString());
+        Assert.assertEquals(1, result.get("availableProfiles").getAsJsonArray().size());
+
+        Assert.assertEquals("id", user.get("id").getAsString());
+        Assert.assertEquals(2, user.get("properties").getAsJsonArray().size());
     }
 
     @Test
@@ -71,13 +109,5 @@ public class YggdrasilServiceTest {
     public void testInvalidate() {
         Assert.fail();
     }
-
-    @AfterEach
-    public static void destroy() throws IOException {
-        service = null;
-
-        server.close();
-    }
-
 
 }
